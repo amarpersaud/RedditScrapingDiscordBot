@@ -1,6 +1,8 @@
 # RedditScrapingDiscordBot
 Discord bot using Discord.py that scrapes a subreddit for keywords, then sends messages to a channel
 
+The bot scrapes the subreddit every 30 seconds for the 5 newest posts, and if they are new posts which contain a keyword, a message is sent to the appropriate channel with mentions if the user has subscribed to the keyword. Keywords can be added without subscribing for no mentions.
+
 ## Installation
 Rename files 'EXAMPLE.env' and 'EXAMPLEpraw.ini' by removing EXAMPLE from the name (giving '.env' and 'praw.ini'). These files do NOT contain any keys, tokens, IDs, or client secrets. You must fill them in with yours.
 	
