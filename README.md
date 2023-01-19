@@ -31,11 +31,18 @@ python ./nbot.py
 
 ## Usage:
 ```
-	/kw-add [keywords] - Adds list of space delimited keywords
-	/kw-delete [keywords] - Deletes list of space delimited keywords
-	/kw-list - lists existing keywords
-	/kw-sub [keywords] - Subscribes to mentions to keywords
-	/kw-unsub [keywords] - Unsubscribes from mentions to keywords
-	/kw-unsub-all [keywords] - Unsubscribes from mentions to all keywords
-	/kw-subs - View those subscribed to a keyword
+/kw-add [keywords] - Adds list of space delimited keywords
+/kw-delete [keywords] - Deletes list of space delimited keywords
+/kw-list - lists existing keywords
+/kw-sub [keywords] - Subscribes to mentions to keywords
+/kw-unsub [keywords] - Unsubscribes from mentions to keywords
+/kw-unsub-all [keywords] - Unsubscribes from mentions to all keywords
+/kw-subs - View those subscribed to a keyword
 ```
+
+## Dependencies
+- [discord.py](https://github.com/Rapptz/discord.py)
+- praw
+- asyncpraw
+- python-dotenv
+- asyncio
