@@ -1,1 +1,8 @@
-Usage:\n/keyword clear\n/keyword list\n/keyword add [list of keywords]\n/keyword delete [list of keywords]\n/keyword sub [keywords to sub to]\n/keyword unsub [keywords to unsub from]\n/keyword subs [keyword to check]\n/keyword help
+Usage:
+	/kw-add [keywords] - Adds list of space delimited keywords
+	/kw-delete [keywords] - Deletes list of space delimited keywords
+	/kw-list - lists existing keywords
+	/kw-sub [keywords] - Subscribes to mentions to keywords
+	/kw-unsub [keywords] - Unsubscribes from mentions to keywords
+	/kw-unsub-all [keywords] - Unsubscribes from mentions to all keywords
+	/kw-subs - View those subscribed to a keyword
