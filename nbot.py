@@ -30,7 +30,7 @@ disctoken = os.getenv('TOKEN')
 
 helptext = ""
 with open('./helptext.txt') as f:
-    helptext = f.readlines()
+    helptext = "\n".join(f.readlines())
 
 def post_has_keyword(post, keyword):
     return (keyword.lower() in post.title.lower()) or (keyword.lower() in post.selftext.lower())
