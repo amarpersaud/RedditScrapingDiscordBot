@@ -1,0 +1,1 @@
+Usage:\n/keyword clear\n/keyword list\n/keyword add [list of keywords]\n/keyword delete [list of keywords]\n/keyword sub [keywords to sub to]\n/keyword unsub [keywords to unsub from]\n/keyword subs [keyword to check]\n/keyword help
