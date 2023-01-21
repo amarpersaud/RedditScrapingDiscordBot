@@ -69,50 +69,62 @@ class MyClient(discord.Client):
     @tasks.loop(seconds=30)  # task runs every 30 seconds
     async def my_background_task(self):
         print("Loop running")
-        
-        channel = self.get_channel(os.getenv('CHANNEL'))
-        if(channel == None):
-            channel = await self.fetch_channel(os.getenv('CHANNEL'))
-        
-        postcount = 5
-        async with asyncpraw.Reddit('bot1') as reddit:
-            subreddit = await reddit.subreddit("hardwareswap")
-            currentNewestPosts = []
-            #remove dupes
-            async for p in subreddit.new(limit=postcount):
-                if(p.id not in self.processedIDs):
-                    currentNewestPosts.append(p)
-                    self.processedIDs.append(p.id)
-            #remove processed ids
-            while len(self.processedIDs) > (2 * postcount):
-                self.processedIDs.pop(0)
-            print("Found "+ str(len(currentNewestPosts)) + " new posts")
-            if(len(currentNewestPosts) != 0):
-                for submission in currentNewestPosts:
-                    subbedusers = []
-                    subbedIDs = []
-                    keywordsFound = []
-                    
-                    for keyword in self.keywords:
-                        if post_has_keyword(submission, keyword.text):
-                            keywordsFound.append(keyword.text)
-                            for su in keyword.subs:
-                                if (su not in subbedIDs):
-                                    subbedIDs.append(su)
-                                    #Get the user, use fetch if get fails
-                                    usr = self.get_user(su)
-                                    if usr is None:
-                                        usr = await self.fetch_user(su)
-                                    subbedusers.append(usr)
-                    if len(keywordsFound) > 0:
-                        await channel.send("{}\nSubs: {}\nKeywords: {}".format(submission.url, ", ".join(map(lambda x: x.mention, subbedusers)), ", ".join(keywordsFound)))
-                        print("Submitted link: {}\nContained {}".format(submission.title, ", ".join(keywordsFound)))
+        channel = None
+        try:
+            channel = self.get_channel(os.getenv('CHANNEL'))
+            if(channel == None):
+                channel = await self.fetch_channel(os.getenv('CHANNEL'))
+        except Exception as e:
+            print("Failed to get discord channel in background task")
+            print(e)
             
-            try:
-                with open(processedPath, "wb") as f:
-                    pickle.dump(self.processedIDs, f)
-            except:
-                print("Failed to save processed IDs")
+        postcount = 5
+        
+        currentNewestPosts = []
+        
+        try:
+            async with asyncpraw.Reddit('bot1') as reddit:
+                subreddit = await reddit.subreddit("hardwareswap")
+                async for p in subreddit.new(limit=postcount):
+                    if(p.id not in self.processedIDs):
+                        currentNewestPosts.append(p)
+                        self.processedIDs.append(p.id)
+                await reddit.close()
+                    #remove processed ids
+                while len(self.processedIDs) > (2 * postcount):
+                    self.processedIDs.pop(0)
+        except Exception as e:
+            print("Failed to load reddit for some reason")
+            print(e)
+            
+        print("Found "+ str(len(currentNewestPosts)) + " new posts")
+        
+        if(len(currentNewestPosts) != 0):
+            for submission in currentNewestPosts:
+                subbedusers = []
+                subbedIDs = []
+                keywordsFound = []
+                
+                for keyword in self.keywords:
+                    if post_has_keyword(submission, keyword.text):
+                        keywordsFound.append(keyword.text)
+                        for su in keyword.subs:
+                            if (su not in subbedIDs):
+                                subbedIDs.append(su)
+                                #Get the user, use fetch if get fails
+                                usr = self.get_user(su)
+                                if usr is None:
+                                    usr = await self.fetch_user(su)
+                                subbedusers.append(usr)
+                if len(keywordsFound) > 0:
+                    await channel.send("{}\nSubs: {}\nKeywords: {}".format(submission.url, ", ".join(map(lambda x: x.mention, subbedusers)), ", ".join(keywordsFound)))
+                    print("Submitted link: {}\nContained {}".format(submission.title, ", ".join(keywordsFound)))
+        try:
+            with open(processedPath, "wb") as f:
+                pickle.dump(self.processedIDs, f)
+        except:
+            print("Failed to save processed IDs")
+            return
 
     
     @my_background_task.before_loop
